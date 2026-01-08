@@ -1,16 +1,20 @@
 import { useState, useRef } from "react";
-import { AiTwotoneSave, AiOutlineUpload } from "react-icons/ai";
-import Loader from "../Layout/Loader";
-
+import { AiTwotoneSave, AiOutlineUpload, AiFillDelete } from "react-icons/ai";
 import axios from "axios";
+import Loader from "../Layout/Loader";
 /* PARA EL SELECTOR DE COLORES */
 import ColorPicker from "@rc-component/color-picker";
 import "@rc-component/color-picker/assets/index.css";
-export default function CreateGame({ cerrar, recargar }) {
+export default function EditGame({ game, cerrar, recargar }) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [loader, setLoader] = useState(false);
-  const [titulo, setTitulo] = useState("");
-  const [color, setColor] = useState("#ffffff");
+  const [gameData, setGameData] = useState({
+    game_id: game._id ? game._id : "",
+    imageUrl: game.imageUrl ? game.imageUrl : "",
+  });
+
+  const [titulo, setTitulo] = useState(game.title ? game.title : "");
+  const [color, setColor] = useState(game.color ? game.color : "#ffffff");
   const handleColor = (value, type) => {
     //console.log(value.toHexString());
     setColor(value.toHexString());
@@ -47,14 +51,44 @@ export default function CreateGame({ cerrar, recargar }) {
       form.set("title", titulo);
       form.set("color", color);
       // AQUI UTILIZAR AXIOS PARA ENVIAR EL FORM
-      const result = await axios.post(`${apiUrl}/games`, form, {
-        /*
+      const result = await axios.patch(
+        `${apiUrl}/games/${gameData.game_id}`,
+        form,
+        {
+          /*
         headers: {
           "Content-Type": "application/json",
         }, */
-        withCredentials: false,
-      });
+          withCredentials: false,
+        }
+      );
       // se comenta el Content-Type porque si se lo coloca se envia como JSON y no como FormData
+      //console.log(result);
+      setLoader(false);
+      recargar();
+    } catch (error) {
+      setLoader(false);
+      console.log(error);
+      alert("Hubo un error ");
+    }
+  };
+
+  // funcion para eliminar el jeugo
+  const HandleDelete = async () => {
+    try {
+      setLoader(true);
+      // AQUI UTILIZAR AXIOS PARA ENVIAR EL FORM
+      const result = await axios.delete(
+        `${apiUrl}/games/${gameData.game_id}`,
+        {},
+        {
+          /*
+        headers: {
+          "Content-Type": "application/json",
+        }, */
+          withCredentials: false,
+        }
+      );
       //console.log(result);
       setLoader(false);
       recargar();
@@ -69,11 +103,11 @@ export default function CreateGame({ cerrar, recargar }) {
       <div className="fixed inset-0 bg-black/20  backdrop-blur-sm flex justify-center items-center z-50 ">
         <div className="w-[120vh] ">
           <div className="bg-white p-3  rounded-3xl animate-fade-in">
-            {loader && <Loader />}
             <div className=" h-full w-full flex flex-col p-4">
+              {loader && <Loader />}
               <div className="flex flex-row">
                 <h1 className=" flex-1 text-3xl font-semibold text-lime-800 ">
-                  Crear Nuevo Juego
+                  Editar Juego
                 </h1>
                 <button
                   onClick={cerrar}
@@ -139,7 +173,15 @@ export default function CreateGame({ cerrar, recargar }) {
                     </div>
                     {/*   <Lottie animationData={anim} className="w-32 mx-auto" /> */}
                     {!fileP ? (
-                      <h1></h1>
+                      gameData.imageUrl && (
+                        <img
+                          className="mt-3 h-64 w-64  mx-auto"
+                          src={`${apiUrl}/resources${gameData.imageUrl}`}
+                          alt="Next.js logo"
+                          width={200}
+                          height={20}
+                        />
+                      )
                     ) : (
                       <img
                         src={fileP}
@@ -150,7 +192,14 @@ export default function CreateGame({ cerrar, recargar }) {
                   </div>
                 </div>
                 <div className="flex flex-row">
-                  <div className="flex-1"></div>
+                  <div className="flex-1">
+                    <button
+                      className="p-3 cursor-pointer bg-red-600 rounded-3xl font-semibold text-white self-end"
+                      onClick={() => HandleDelete()}
+                    >
+                      <AiFillDelete className="text-3xl" />
+                    </button>
+                  </div>
                   <button
                     className="p-3 cursor-pointer bg-lime-600 rounded-3xl font-semibold text-white self-end"
                     onClick={() => handleSubmit()}

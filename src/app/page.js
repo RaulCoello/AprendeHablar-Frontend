@@ -3,11 +3,19 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ListGames } from "../components/Game/ListGames";
+import Loader from "../components/Layout/Loader";
+import Config from "@/components/Layout/Config";
+import Cookies from "universal-cookie";
 
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const searchParams = useSearchParams();
-  const config = searchParams.get("config"); ///?config=admin
+
+  // const searchParams = useSearchParams();
+  // const config = searchParams.get("config"); ///?config=admin
+  // tomar la cookie para ver si esta en modo admin o modo user
+  const cookies = new Cookies();
+  const cookieAdminMode = cookies.get("adminMode");
+
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -22,8 +30,8 @@ export default function Home() {
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
-
       const data = await response.json();
+      //console.log(data);
       setGames(data);
       setError(null);
     } catch (err) {
@@ -35,10 +43,11 @@ export default function Home() {
 
   useEffect(() => {
     fetchGames();
-    setAdmin(config === "admin");
+    //setAdmin(config === "admin");
+    setAdmin(cookieAdminMode || false);
   }, []);
 
-  if (loading) return <div>Cargando...</div>;
+  //if (loading) return <div>Cargando...</div>;
   if (error)
     return (
       <div>
@@ -47,6 +56,8 @@ export default function Home() {
     );
   return (
     <div className="p-8">
+      {loading && <Loader />}
+      <Config adminMode={admin} />
       {/* PRIMIVO COLOCAR UN DIV EN FORMA DE NAVBAR */}
       <div className=" p-4 flex flex-row gap-11 rounded-3xl">
         <div className="bg-lime-500 rounded-4xl border-8 border-lime-800  flex-1 self-start text-start  content-center items-center justify-center h-[20vh]">
@@ -67,7 +78,7 @@ export default function Home() {
           />
         </div>
       </div>
-      {/* Mostrar la lista de juegos en formato de grid*/}
+      {/* Mostrar la lista de juegos en formato de grid  */}
       <ListGames games={games} admin={admin} recargar={fetchGames} />
       {/* colocar un boton flotante para entrar al modo de adminstracion de los juegos*/}
     </div>
