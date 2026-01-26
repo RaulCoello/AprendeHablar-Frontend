@@ -75,7 +75,7 @@ export function ListGames({ games, admin, recargar }) {
     if (admin) {
       router.push(`/editgame/${gameid}`);
     } else {
-      router.push(`/play/${gameid}`);
+      router.push(`/PlayGame?game=${gameid}`);
     }
   };
 

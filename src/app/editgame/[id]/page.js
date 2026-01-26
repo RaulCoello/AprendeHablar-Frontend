@@ -41,7 +41,12 @@ export default function EditGamePage() {
       {loading && <Loader />}
       <Navbar />
       {/* LISTAR LAS PREGUNTAS EN FORMA DE GRID DE 1 COLUMNA */}
-      <ListQuestions questions={questions} gameid={id} />
+      <ListQuestions
+        questions={questions}
+        gameid={id}
+        reload={fetchQuestions}
+        setLoading={setLoading}
+      />
     </div>
   );
 }
