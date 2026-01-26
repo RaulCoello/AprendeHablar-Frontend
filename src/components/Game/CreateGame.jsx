@@ -47,7 +47,7 @@ export default function CreateGame({ cerrar, recargar }) {
       form.set("title", titulo);
       form.set("color", color);
       // AQUI UTILIZAR AXIOS PARA ENVIAR EL FORM
-      const result = await axios.post(`${apiUrl}/games`, form, {
+      const result = await axios.post(`${apiUrl}/games/`, form, {
         /*
         headers: {
           "Content-Type": "application/json",

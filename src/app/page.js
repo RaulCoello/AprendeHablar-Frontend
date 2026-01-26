@@ -1,11 +1,11 @@
 "use client";
-import Image from "next/image";
+
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { ListGames } from "../components/Game/ListGames";
 import Loader from "../components/Layout/Loader";
 import Config from "@/components/Layout/Config";
 import Cookies from "universal-cookie";
+import Navbar from "@/components/Layout/Navbar";
 
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -25,7 +25,7 @@ export default function Home() {
   const fetchGames = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${apiUrl}/games`);
+      const response = await fetch(`${apiUrl}/games/`);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -58,26 +58,7 @@ export default function Home() {
     <div className="p-8">
       {loading && <Loader />}
       <Config adminMode={admin} />
-      {/* PRIMIVO COLOCAR UN DIV EN FORMA DE NAVBAR */}
-      <div className=" p-4 flex flex-row gap-11 rounded-3xl">
-        <div className="bg-lime-500 rounded-4xl border-8 border-lime-800  flex-1 self-start text-start  content-center items-center justify-center h-[20vh]">
-          <div className="mx-auto bg-center justify-center content-center">
-            <h1 className="mx-auto px-12 font-black  text-6xl text-white">
-              Habla y Aprende
-            </h1>
-          </div>
-        </div>
-        <div className="px-14">
-          <Image
-            className=""
-            src="/duo.png"
-            alt="Next.js logo"
-            width={200}
-            height={20}
-            priority
-          />
-        </div>
-      </div>
+      <Navbar />
       {/* Mostrar la lista de juegos en formato de grid  */}
       <ListGames games={games} admin={admin} recargar={fetchGames} />
       {/* colocar un boton flotante para entrar al modo de adminstracion de los juegos*/}

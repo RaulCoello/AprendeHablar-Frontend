@@ -7,10 +7,11 @@ import ColorPicker from "@rc-component/color-picker";
 import "@rc-component/color-picker/assets/index.css";
 export default function EditGame({ game, cerrar, recargar }) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiMedia = process.env.NEXT_PUBLIC_API_MEDIA;
   const [loader, setLoader] = useState(false);
   const [gameData, setGameData] = useState({
-    game_id: game._id ? game._id : "",
-    imageUrl: game.imageUrl ? game.imageUrl : "",
+    game_id: game.id ? game.id : 0,
+    image: game.image ? game.image : "",
   });
 
   const [titulo, setTitulo] = useState(game.title ? game.title : "");
@@ -51,8 +52,8 @@ export default function EditGame({ game, cerrar, recargar }) {
       form.set("title", titulo);
       form.set("color", color);
       // AQUI UTILIZAR AXIOS PARA ENVIAR EL FORM
-      const result = await axios.patch(
-        `${apiUrl}/games/${gameData.game_id}`,
+      const result = await axios.post(
+        `${apiUrl}/games/${gameData.game_id}/`,
         form,
         {
           /*
@@ -60,7 +61,7 @@ export default function EditGame({ game, cerrar, recargar }) {
           "Content-Type": "application/json",
         }, */
           withCredentials: false,
-        }
+        },
       );
       // se comenta el Content-Type porque si se lo coloca se envia como JSON y no como FormData
       //console.log(result);
@@ -79,7 +80,7 @@ export default function EditGame({ game, cerrar, recargar }) {
       setLoader(true);
       // AQUI UTILIZAR AXIOS PARA ENVIAR EL FORM
       const result = await axios.delete(
-        `${apiUrl}/games/${gameData.game_id}`,
+        `${apiUrl}/games/${gameData.game_id}/`,
         {},
         {
           /*
@@ -87,7 +88,7 @@ export default function EditGame({ game, cerrar, recargar }) {
           "Content-Type": "application/json",
         }, */
           withCredentials: false,
-        }
+        },
       );
       //console.log(result);
       setLoader(false);
@@ -173,10 +174,10 @@ export default function EditGame({ game, cerrar, recargar }) {
                     </div>
                     {/*   <Lottie animationData={anim} className="w-32 mx-auto" /> */}
                     {!fileP ? (
-                      gameData.imageUrl && (
+                      gameData.image && (
                         <img
                           className="mt-3 h-64 w-64  mx-auto"
-                          src={`${apiUrl}/resources${gameData.imageUrl}`}
+                          src={`${apiMedia}/${gameData.image}`}
                           alt="Next.js logo"
                           width={200}
                           height={20}
