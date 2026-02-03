@@ -72,8 +72,9 @@ export default function QSRQuestion({ question, aceptar }) {
             return (
               <div
                 key={index}
-                onClick={() => aceptar(answer.answer)}
-                className="flex flex-col p-4 gap-2  text-3xl  bg-orange-400 hover:shadow-xl hover:shadow-orange-900 cursor-pointer items-center justify-center rounded-3xl"
+                onClick={() => aceptar(answer.answer, answer.is_correct)}
+                className="flex flex-col p-4 gap-2  text-3xl   hover:shadow-xl hover:shadow-orange-900 cursor-pointer items-center justify-center rounded-3xl"
+                style={{ backgroundColor: answer.color || "#fb923c" }}
               >
                 <div className="flex flex-row gap-2 w-full items-center justify-center">
                   <div className="flex flex-col gap-2">

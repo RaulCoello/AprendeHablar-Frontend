@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Progres from "./Progres";
 import QSRQuestion from "../QuestionsTypes/Selection/Resolve/QSRQuestion";
+import CorrectOp from "./CorrectOp";
 
 export default function LayoutGame({ questions }) {
   //{questions.length}
@@ -10,6 +11,10 @@ export default function LayoutGame({ questions }) {
   const [questions_resolved, setQuestions_resolved] = useState([]);
   // hacer una copia de las questions para ir resolviendo
   const [questions_copy, setQuestions_copy] = useState([...questions]);
+  const [opSelect, setOpSelect] = useState({
+    is_correct: false,
+    open: false,
+  });
   const [current_question, setCurrent_question] = useState({
     id: null,
     title: "",
@@ -38,6 +43,8 @@ export default function LayoutGame({ questions }) {
     });
     // eliminar la primer pregunta de questions_copy
     if (questions_copy.length === 1) return;
+    // aqui mostrar la animacion
+
     setQuestions_copy((prev) => prev.slice(1));
   };
 
@@ -99,22 +106,38 @@ export default function LayoutGame({ questions }) {
   */
   // hacer una funcion que traiga la primer y siguente pregunta
   //questions_copy --> utilizar la copia porque se tiene que ir eliminando las preguntas ya resueltas
-  const aceptar = async (opSelect) => {
+  // enviar tambien si la op es correcta o no para avanzar e indicar al jogador
+  const aceptar = async (opSelect, is_correct) => {
     // Texto que quieres que diga
     const text = opSelect;
-
     // Esperar a que termine de hablar
     await speak(text);
+
+    //Abrir la ventana para ver si la respuesta es correcta o no
+    setOpSelect({ ...CorrectOp, is_correct: is_correct, open: true });
+
+    // cuando termine de hablar avanzar a la siguiente pregunta
+    if (is_correct) addResolveQuestion();
   };
+
+  const closeopSelect = () => {
+    setOpSelect({ ...CorrectOp, is_correct: false, open: false });
+  };
+  //opSelect.is_correct
   return (
     <div>
+      {opSelect.open ? (
+        <CorrectOp is_correct={opSelect.is_correct} close={closeopSelect} />
+      ) : (
+        ""
+      )}
       <Progres
         numTotal={total_number_question}
         actual={questions_resolved.length + 1}
       />
       {/* UTILIZAR UN SWITCH PARA RENDERIZAR EL TIPO DE PREGUNTA */}
       <QSRQuestion question={current_question} aceptar={aceptar} />
-      <button onClick={() => addResolveQuestion()}>Simular</button>
+      {/* <button onClick={() => addResolveQuestion()}>Simular</button> */}
     </div>
   );
 }

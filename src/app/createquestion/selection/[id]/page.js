@@ -54,6 +54,8 @@ export default function SelectionQuestion() {
         ansForm.set("text", Answers[i].text);
         ansForm.set("correct", Answers[i].correct ? "True" : "False");
         ansForm.set("question_id", questionId);
+        //agregar el color de la respuesta
+        ansForm.set("color", Answers[i].color);
         const resulta = await axios.post(`${apiUrl}/answers/`, ansForm, {
           /*
         headers: {

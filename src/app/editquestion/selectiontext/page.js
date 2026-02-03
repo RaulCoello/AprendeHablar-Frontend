@@ -55,6 +55,7 @@ export default function EditQuestion() {
           ansForm.set("text", item.answer);
           ansForm.set("correct", item.is_correct ? "True" : "False");
           ansForm.set("question_id", questionid);
+          ansForm.set("color", item.color);
           await axios.post(`${apiUrl}/answers/`, ansForm, {
             withCredentials: false,
           });
@@ -66,6 +67,7 @@ export default function EditQuestion() {
           ansForm.set("answer", item.answer);
           ansForm.set("is_correct", item.is_correct ? "True" : "False");
           ansForm.set("question_id", questionid);
+          ansForm.set("color", item.color);
           await axios.post(`${apiUrl}/answers/${item.id}/`, ansForm, {
             withCredentials: false,
           });
