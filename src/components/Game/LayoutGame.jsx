@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Progres from "./Progres";
 import QSRQuestion from "../QuestionsTypes/Selection/Resolve/QSRQuestion";
 import CorrectOp from "./CorrectOp";
+import GameOver from "./GameOver";
 
 export default function LayoutGame({ questions }) {
   //{questions.length}
@@ -15,6 +16,7 @@ export default function LayoutGame({ questions }) {
     is_correct: false,
     open: false,
   });
+
   const [current_question, setCurrent_question] = useState({
     id: null,
     title: "",
@@ -117,13 +119,17 @@ export default function LayoutGame({ questions }) {
     setOpSelect({ ...CorrectOp, is_correct: is_correct, open: true });
 
     // cuando termine de hablar avanzar a la siguiente pregunta
-    if (is_correct) addResolveQuestion();
+    //if (is_correct) addResolveQuestion();
   };
 
   const closeopSelect = () => {
     setOpSelect({ ...CorrectOp, is_correct: false, open: false });
+    if (opSelect.is_correct) {
+      addResolveQuestion();
+    }
   };
   //opSelect.is_correct
+
   return (
     <div>
       {opSelect.open ? (
@@ -131,12 +137,23 @@ export default function LayoutGame({ questions }) {
       ) : (
         ""
       )}
+      {/* MOSTRAR UNA WEA QUE INDIQUE QUE SE TERMINO EL JOGA BONITO */}
+      {questions_resolved.length + 1 > total_number_question ? (
+        <GameOver puntos={total_number_question} />
+      ) : (
+        ""
+      )}
       <Progres
         numTotal={total_number_question}
         actual={questions_resolved.length + 1}
       />
+
       {/* UTILIZAR UN SWITCH PARA RENDERIZAR EL TIPO DE PREGUNTA */}
-      <QSRQuestion question={current_question} aceptar={aceptar} />
+      <QSRQuestion
+        question={current_question}
+        aceptar={aceptar}
+        speak={speak}
+      />
       {/* <button onClick={() => addResolveQuestion()}>Simular</button> */}
     </div>
   );

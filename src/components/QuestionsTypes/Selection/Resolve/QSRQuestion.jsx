@@ -4,11 +4,12 @@ import Image from "next/image";
 import Loader from "@/components/Layout/Loader";
 import { AiTwotonePlayCircle } from "react-icons/ai";
 
-export default function QSRQuestion({ question, aceptar }) {
+export default function QSRQuestion({ question, aceptar, speak }) {
   const apiBase = process.env.NEXT_PUBLIC_API_BASE + "/media";
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [loading, setLoading] = useState(false);
   const [answers, setAnswers] = useState([]);
+  const [speaking, setSpeaking] = useState(false);
   // cargar las respuestas
   const fetchData = async () => {
     try {
@@ -30,9 +31,22 @@ export default function QSRQuestion({ question, aceptar }) {
     }
   };
 
+  const LeerPreguntaIndicacion = async () => {
+    //console.log(question);
+    // title indication
+    setSpeaking(true);
+    await speak(question.title);
+    await speak(question.indication);
+    setSpeaking(false);
+  };
+
   useEffect(() => {
     fetchData();
+    LeerPreguntaIndicacion();
   }, [question]);
+
+  // como es la primera vez que se abre la pregunta hay que hacer que se lea la pregunta y la indicacion
+
   return (
     <>
       {loading && <Loader />}
@@ -67,31 +81,35 @@ export default function QSRQuestion({ question, aceptar }) {
           </div>
         </div>
         {/* AQUI VAN LAS OPCIONES DE RESPUESTA */}
-        <div className="p-4 grid lg:grid-cols-2 grid-cols-2 gap-10">
-          {answers.map((answer, index) => {
-            return (
-              <div
-                key={index}
-                onClick={() => aceptar(answer.answer, answer.is_correct)}
-                className="flex flex-col p-4 gap-2  text-3xl   hover:shadow-xl hover:shadow-orange-900 cursor-pointer items-center justify-center rounded-3xl"
-                style={{ backgroundColor: answer.color || "#fb923c" }}
-              >
-                <div className="flex flex-row gap-2 w-full items-center justify-center">
-                  <div className="flex flex-col gap-2">
-                    <div className=" flex flex-row gap-2 mx-auto text-center items-center justify-center">
-                      <h1 className="w-full flex-1 p-2 text-start font-bold text-white">
-                        {answer.answer ? answer.answer : "Sin respuesta"}
-                      </h1>
+        {!speaking ? (
+          <div className="p-4 grid lg:grid-cols-2 grid-cols-2 gap-10 animate-fade-in">
+            {answers.map((answer, index) => {
+              return (
+                <div
+                  key={index}
+                  onClick={() => aceptar(answer.answer, answer.is_correct)}
+                  className="flex flex-col p-4 gap-2  text-3xl   hover:shadow-xl hover:shadow-orange-900 cursor-pointer items-center justify-center rounded-3xl"
+                  style={{ backgroundColor: answer.color || "#fb923c" }}
+                >
+                  <div className="flex flex-row gap-2 w-full items-center justify-center">
+                    <div className="flex flex-col gap-2">
+                      <div className=" flex flex-row gap-2 mx-auto text-center items-center justify-center">
+                        <h1 className="w-full flex-1 p-2 text-start font-bold text-white">
+                          {answer.answer ? answer.answer : "Sin respuesta"}
+                        </h1>
+                      </div>
+                      <button className="z-10 cursor-pointer  bg-orange-300 rounded-full p-2 font-normal text-lg">
+                        <AiTwotonePlayCircle className="text-7xl text-white mx-auto" />
+                      </button>
                     </div>
-                    <button className="z-10 cursor-pointer  bg-orange-300 rounded-full p-2 font-normal text-lg">
-                      <AiTwotonePlayCircle className="text-7xl text-white mx-auto" />
-                    </button>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </>
   );
