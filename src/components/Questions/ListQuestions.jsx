@@ -42,6 +42,9 @@ export default function ListQuestions({
           `/editquestion/selectiontext?questionid=${id}&gameid=${gameid}`,
         );
         break;
+      case "image":
+        router.push(`/editquestion/image?questionid=${id}&gameid=${gameid}`);
+        break;
       default:
         alert("Tipo de pregunta no soportada aun");
     }
