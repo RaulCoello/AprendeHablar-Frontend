@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Progres from "./Progres";
 import QSRQuestion from "../QuestionsTypes/Selection/Resolve/QSRQuestion";
+import QIRQuestion from "../QuestionsTypes/Image/Resolve/QIRQuestion";
 import CorrectOp from "./CorrectOp";
 import GameOver from "./GameOver";
 
@@ -111,7 +112,7 @@ export default function LayoutGame({ questions }) {
   // enviar tambien si la op es correcta o no para avanzar e indicar al jogador
   const aceptar = async (opSelect, is_correct) => {
     // Texto que quieres que diga
-    const text = opSelect;
+    const text = opSelect || "";
     // Esperar a que termine de hablar
     await speak(text);
 
@@ -130,6 +131,33 @@ export default function LayoutGame({ questions }) {
   };
   //opSelect.is_correct
 
+  // switch para mostrar el layout de las respuestas segun corresponde al tipo de pregunta
+  //current_question
+  const RenderTypeAnswer = () => {
+    const type = current_question.type_question;
+
+    switch (type) {
+      case "selection_text":
+        return (
+          <QSRQuestion
+            question={current_question}
+            aceptar={aceptar}
+            speak={speak}
+          />
+        );
+      case "image":
+        return (
+          <QIRQuestion
+            question={current_question}
+            aceptar={aceptar}
+            speak={speak}
+          />
+        );
+
+      default:
+        return <div>Tipo: {type} no disponible de momento</div>;
+    }
+  };
   return (
     <div>
       {opSelect.open ? (
@@ -149,11 +177,7 @@ export default function LayoutGame({ questions }) {
       />
 
       {/* UTILIZAR UN SWITCH PARA RENDERIZAR EL TIPO DE PREGUNTA */}
-      <QSRQuestion
-        question={current_question}
-        aceptar={aceptar}
-        speak={speak}
-      />
+      {RenderTypeAnswer()}
       {/* <button onClick={() => addResolveQuestion()}>Simular</button> */}
     </div>
   );

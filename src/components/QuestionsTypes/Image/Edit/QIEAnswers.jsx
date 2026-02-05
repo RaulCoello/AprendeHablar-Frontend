@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-
 import {
+  AiTwotoneEdit,
   AiFillDelete,
   AiFillCheckCircle,
   AiFillCloseCircle,
@@ -10,12 +10,12 @@ import {
 import Image from "next/image";
 import SelectColor from "../../Selection/Create/SelectColor";
 
-export default function QICAnswers({ onReturnAnswrs }) {
+export default function QIEAnswers({ onReturnAnswrs, id, setLoading }) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE;
   const [answers, setAnswers] = useState([]);
   const [answerIdEdit, setAnswerIdEdit] = useState(null);
   const [anserEdit, setAnswerEdit] = useState("");
-  const [actualColor, setActualColor] = useState("");
-  const [answerEditColor, setAnswerEditColor] = useState(null);
   const [answerAdd, setAnswerAdd] = useState(false);
   const [openColor, setOpenColor] = useState(false);
   const [answerAddop, setAnswerAddop] = useState({
@@ -25,16 +25,11 @@ export default function QICAnswers({ onReturnAnswrs }) {
     fileP: null,
     fileE: null,
   });
-
+  const [actualColor, setActualColor] = useState("");
+  const [answerEditColor, setAnswerEditColor] = useState(null);
   const closeAddAnswer = () => {
     setAnswerAdd(false);
-    setAnswerAddop({
-      text: "",
-      correct: false,
-      fileP: null,
-      fileE: null,
-      color: "#fb923c",
-    });
+    setAnswerAddop({ text: "", correct: false });
   };
 
   // CRUD con el estado answers
@@ -45,18 +40,17 @@ export default function QICAnswers({ onReturnAnswrs }) {
       const lastId = prev.length > 0 ? prev[prev.length - 1].id : 0;
       const newAnswer = {
         id: lastId + 1,
-        text,
-        correct,
-        color,
+        answer: text,
+        is_correct: correct,
+        is_new: true,
+        color: color,
         fileP,
         fileE,
       };
       return [...prev, newAnswer];
     });
     closeAddAnswer();
-    console.log(answers);
   };
-
   const deleteAnswer = (id) => {
     setAnswers((prev) => prev.filter((a) => a.id !== id));
   };
@@ -72,7 +66,30 @@ export default function QICAnswers({ onReturnAnswrs }) {
   //Devolver las respuestas cada que cambien
   useEffect(() => {
     onReturnAnswrs(answers);
+    //console.log(answers);
   }, [answers]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      // cargar los datos de la pregunta
+      const response = await fetch(`${apiUrl}/answers/${id}/question/`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      setAnswers(data);
+    } catch (err) {
+      alert("Error al cargar los datos");
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const colorset = (color) => {
     setOpenColor(false);
@@ -119,6 +136,11 @@ export default function QICAnswers({ onReturnAnswrs }) {
       const selectedFile = e.target.files[0];
 
       //setAnswerAddop({ ...answerAddop, fileE: selectedFile, fileP: setFileP }); --> Enviar a editar segun el id que se recibe
+
+      // revisar si tiene la propiedad new,
+      // si no tiene la propiedad new entonces vino de la BD por lo tanto no se puede editar
+      // fileE ni fileP, en ese caso hay que empujarle esas propiedades
+
       editAnswer(answerIdEdit, {
         fileE: selectedFile,
         fileP: setFileP,
@@ -133,6 +155,7 @@ export default function QICAnswers({ onReturnAnswrs }) {
     }
   };
   // fin image EDIT --------------
+
   return (
     <>
       {openColor && (
@@ -154,7 +177,13 @@ export default function QICAnswers({ onReturnAnswrs }) {
                 <div className="flex flex-col gap-2">
                   <div className=" flex flex-col gap-2">
                     {/* Si no ha subido una imagen entonces mostrar una por default */}
-                    {!answer.fileP ? (
+                    {answer.answer_image && !answer.fileP ? (
+                      <img
+                        src={`${apiBase}/media/${answer.answer_image}`}
+                        alt="Imagen"
+                        className="mt-3 h-64 w-64  mx-auto"
+                      />
+                    ) : !answer.fileP ? (
                       <div className="mx-auto">
                         <Image
                           src="/duo2.png"
@@ -214,13 +243,13 @@ export default function QICAnswers({ onReturnAnswrs }) {
                   <button
                     onClick={() =>
                       editAnswer(answer.id, {
-                        text: answer.text,
-                        correct: !answer.correct,
+                        answer: answer.answer,
+                        is_correct: !answer.is_correct,
                       })
                     }
-                    className={`rounded-2xl cursor-pointer ${answer.correct ? "bg-green-400" : "bg-red-400"} p-2 font-bold text-white`}
+                    className={`rounded-2xl cursor-pointer ${answer.is_correct ? "bg-green-400" : "bg-red-400"} p-2 font-bold text-white`}
                   >
-                    {answer.correct ? "Correcta" : "Incorrecta"}
+                    {answer.is_correct ? "Correcta" : "Incorrecta"}
                   </button>
                 </div>
               </div>
@@ -255,16 +284,16 @@ export default function QICAnswers({ onReturnAnswrs }) {
               )}
 
               {/*
-              <input
-                onChange={(e) =>
-                  setAnswerAddop({ ...answerAddop, text: e.target.value })
-                }
-                value={answerAddop.text}
-                type="text"
-                className="w-full flex-1 p-2 text-start font-bold text-lime-950"
-                placeholder="Agregar respuesta"
-              />
-             */}
+                          <input
+                            onChange={(e) =>
+                              setAnswerAddop({ ...answerAddop, text: e.target.value })
+                            }
+                            value={answerAddop.text}
+                            type="text"
+                            className="w-full flex-1 p-2 text-start font-bold text-lime-950"
+                            placeholder="Agregar respuesta"
+                          />
+                         */}
 
               <div className="grid grid-cols-4 gap-2 ">
                 <button

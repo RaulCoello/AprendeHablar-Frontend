@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Loader from "@/components/Layout/Loader";
 import Navbar from "@/components/Layout/Navbar";
 import QSEBody from "@/components/QuestionsTypes/Selection/Edit/QSEBody";
-import QSEAnswers from "@/components/QuestionsTypes/Selection/Edit/QSEAnswers";
+import QIEAnswers from "@/components/QuestionsTypes/Image/Edit/QIEAnswers";
 import { AiFillSave } from "react-icons/ai";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -56,6 +56,8 @@ export default function EditImageQuestion() {
           ansForm.set("correct", item.is_correct ? "True" : "False");
           ansForm.set("question_id", questionid);
           ansForm.set("color", item.color);
+          ansForm.set("answer_image", item.fileE); // como se va  a crear entonces se envia
+
           await axios.post(`${apiUrl}/answers/`, ansForm, {
             withCredentials: false,
           });
@@ -68,6 +70,13 @@ export default function EditImageQuestion() {
           ansForm.set("is_correct", item.is_correct ? "True" : "False");
           ansForm.set("question_id", questionid);
           ansForm.set("color", item.color);
+
+          // si existe la propiedad fileE entonces agregar al carrito de compras xdxd
+          //fileE
+          if (item.fileE) {
+            ansForm.set("answer_image", item.fileE);
+          }
+
           await axios.post(`${apiUrl}/answers/${item.id}/`, ansForm, {
             withCredentials: false,
           });
@@ -107,7 +116,7 @@ export default function EditImageQuestion() {
           setLoading={setLoading}
         />
         {/* AQUI VAN LAS OPCIONES DE RESPUESTA */}
-        <QSEAnswers
+        <QIEAnswers
           onReturnAnswrs={ReturnAnswers}
           id={questionid}
           setLoading={setLoading}
