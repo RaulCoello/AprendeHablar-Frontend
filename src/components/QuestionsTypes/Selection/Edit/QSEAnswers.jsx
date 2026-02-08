@@ -145,18 +145,9 @@ export default function QSEAnswers({ onReturnAnswrs, id, setLoading }) {
                         placeholder="Editar Respuesta"
                       />
 
-                      <div className="grid grid-cols-3 gap-2 ">
+                      <div className="flex flex-row  gap-3">
                         <button
-                          onClick={() => (
-                            setAnswerIdEdit(answer.id),
-                            setAnswerEdit(answer.answer)
-                          )}
-                          className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center bg-yellow-300 rounded-4xl p-2 font-normal text-lg"
-                        >
-                          <AiTwotoneEdit className="text-3xl" />
-                        </button>
-                        <button
-                          className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center  rounded-4xl p-2 font-normal text-lg"
+                          className="z-10 flex-1  cursor-pointer flex justify-center items-center text-center content-center self-center  rounded-4xl p-2 font-normal text-lg"
                           style={{ backgroundColor: answer.color || "#fb923c" }}
                           onClick={() => (
                             setActualColor(answer.color || "#fb923c"),
@@ -166,12 +157,25 @@ export default function QSEAnswers({ onReturnAnswrs, id, setLoading }) {
                         >
                           <AiOutlineFormatPainter className="text-3xl text-white" />
                         </button>
-                        <button
-                          onClick={() => deleteAnswer(answer.id)}
-                          className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center bg-red-400 rounded-4xl p-2 font-normal text-lg"
-                        >
-                          <AiFillDelete className="text-3xl text-white" />
-                        </button>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <button
+                            onClick={() => (
+                              setAnswerIdEdit(answer.id),
+                              setAnswerEdit(answer.answer)
+                            )}
+                            className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center bg-transparent rounded-4xl p-2 font-normal text-lg"
+                          >
+                            <AiTwotoneEdit className="text-3xl" />
+                          </button>
+
+                          <button
+                            onClick={() => deleteAnswer(answer.id)}
+                            className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center bg-transparent rounded-4xl p-2 font-normal text-lg"
+                          >
+                            <AiFillDelete className="text-3xl text-red-700" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -209,29 +213,32 @@ export default function QSEAnswers({ onReturnAnswrs, id, setLoading }) {
                 placeholder="Agregar respuesta"
               />
 
-              <div className="grid grid-cols-3 gap-2 ">
-                <button
-                  onClick={() => addAnswerWithUUID()}
-                  className="z-10 cursor-pointer justify-end items-end bg-green-600 rounded-4xl p-2 font-normal text-lg"
-                >
-                  <AiFillCheckCircle className="text-3xl text-white" />
-                </button>
+              <div className="flex flex-row gap-3">
                 <button
                   onClick={() => (
                     setActualColor(answerAddop.color),
                     setOpenColor(true)
                   )}
-                  className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center  rounded-4xl p-2 font-normal text-lg"
+                  className="flex-1 z-10 cursor-pointer flex justify-center items-center text-center content-center self-center  rounded-4xl p-2 font-normal text-lg"
                   style={{ backgroundColor: answerAddop.color || "#fb923c" }}
                 >
                   <AiOutlineFormatPainter className="text-3xl text-white" />
                 </button>
-                <button
-                  onClick={() => closeAddAnswer()}
-                  className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center bg-red-400 rounded-4xl p-2 font-normal text-lg"
-                >
-                  <AiFillCloseCircle className="text-3xl text-white" />
-                </button>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => addAnswerWithUUID()}
+                    className="z-10 cursor-pointer justify-end items-end bg-green-600 rounded-4xl p-2 font-normal text-lg"
+                  >
+                    <AiFillCheckCircle className="text-3xl text-white" />
+                  </button>
+                  <button
+                    onClick={() => closeAddAnswer()}
+                    className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center bg-red-400 rounded-4xl p-2 font-normal text-lg"
+                  >
+                    <AiFillCloseCircle className="text-3xl text-white" />
+                  </button>
+                </div>
               </div>
             </div>
             <button

@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import Progres from "./Progres";
 import QSRQuestion from "../QuestionsTypes/Selection/Resolve/QSRQuestion";
 import QIRQuestion from "../QuestionsTypes/Image/Resolve/QIRQuestion";
+import QPRQuestion from "../QuestionsTypes/Paint/Resolve/QPRQuestion";
 import CorrectOp from "./CorrectOp";
 import GameOver from "./GameOver";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 export default function LayoutGame({ questions }) {
   //{questions.length}
@@ -153,9 +155,28 @@ export default function LayoutGame({ questions }) {
             speak={speak}
           />
         );
+      case "paint":
+        return (
+          <QPRQuestion
+            question={current_question}
+            aceptar={aceptar}
+            speak={speak}
+          />
+        );
 
       default:
-        return <div>Tipo: {type} no disponible de momento</div>;
+        return (
+          <div className="mx-auto text-center p-2 bg-red-400 mt-5 rounded-3xl flex flex-row items-center justify-items-center bg-center self-center justify-center content-center">
+            <span className="text-white font-bold flex p-2  items-center">
+              <AiOutlineExclamationCircle className="text-4xl mx-2 text-white" />
+              Tipo:
+              <span className="p-1 mx-1 bg-red-300 text-black rounded-2xl">
+                {type}
+              </span>
+              no disponible de momento
+            </span>
+          </div>
+        );
     }
   };
   return (

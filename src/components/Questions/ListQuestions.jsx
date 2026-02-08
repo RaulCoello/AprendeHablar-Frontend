@@ -45,6 +45,13 @@ export default function ListQuestions({
       case "image":
         router.push(`/editquestion/image?questionid=${id}&gameid=${gameid}`);
         break;
+
+      case "paint": // se envia a la de selection_text porque es practiamente lo mismo, solo cambia cuando se va a contestar la pregunta xd
+        router.push(
+          `/editquestion/selectiontext?questionid=${id}&gameid=${gameid}`,
+        );
+        break;
+
       default:
         alert("Tipo de pregunta no soportada aun");
     }

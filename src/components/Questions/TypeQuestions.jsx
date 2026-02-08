@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function TypeQuestions({ gameid, CloseTypesQuestion }) {
+  // hay que agregarle iconos a los tipos de preguntas
   const types = [
     {
       id: 1,
@@ -11,6 +12,11 @@ export default function TypeQuestions({ gameid, CloseTypesQuestion }) {
       id: 2,
       name: "Imagen",
       url: `/createquestion/image/${gameid}`,
+    },
+    {
+      id: 3,
+      name: "Pintar",
+      url: `/createquestion/paint/${gameid}`,
     },
   ];
 
