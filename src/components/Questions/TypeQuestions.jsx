@@ -23,6 +23,11 @@ export default function TypeQuestions({ gameid, CloseTypesQuestion }) {
       name: "Sonidos",
       url: `/createquestion/sound/${gameid}`,
     },
+    {
+      id: 5,
+      name: "Detección de rostros",
+      url: `/createquestion/facedetection/${gameid}`,
+    },
   ];
 
   return (

@@ -10,10 +10,13 @@ export default function QIRQuestion({ question, aceptar, speak }) {
   const [loading, setLoading] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [speaking, setSpeaking] = useState(false);
+  const [leer, setLeer] = useState(false);
+
   // cargar las respuestas
   const fetchData = async () => {
     try {
       setLoading(true);
+      setLeer(false);
       const id = question.id;
       //alert(id);
       // cargar los datos de la pregunta
@@ -28,6 +31,7 @@ export default function QIRQuestion({ question, aceptar, speak }) {
       console.log(err);
     } finally {
       setLoading(false);
+      setLeer(true);
     }
   };
 
@@ -42,8 +46,11 @@ export default function QIRQuestion({ question, aceptar, speak }) {
 
   useEffect(() => {
     fetchData();
-    LeerPreguntaIndicacion();
   }, [question]);
+
+  useEffect(() => {
+    if (leer) LeerPreguntaIndicacion();
+  }, [leer]);
 
   // como es la primera vez que se abre la pregunta hay que hacer que se lea la pregunta y la indicacion
 

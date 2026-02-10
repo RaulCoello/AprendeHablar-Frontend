@@ -56,6 +56,10 @@ export default function ListQuestions({
         router.push(`/editquestion/sound?questionid=${id}&gameid=${gameid}`);
         break;
 
+      case "face": // aunque es face se envia como imagen a editar porque es lo mismo
+        router.push(`/editquestion/image?questionid=${id}&gameid=${gameid}`);
+        break;
+
       default:
         alert("Tipo de pregunta no soportada aun");
     }

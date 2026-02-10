@@ -128,6 +128,14 @@ export default function LayoutGame({ questions, speak }) {
             speak={speak}
           />
         );
+      case "face":
+        return (
+          <QIRQuestion
+            question={current_question}
+            aceptar={aceptar}
+            speak={speak}
+          />
+        );
 
       default:
         return (
