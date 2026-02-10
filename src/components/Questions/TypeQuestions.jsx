@@ -18,6 +18,11 @@ export default function TypeQuestions({ gameid, CloseTypesQuestion }) {
       name: "Pintar",
       url: `/createquestion/paint/${gameid}`,
     },
+    {
+      id: 4,
+      name: "Sonidos",
+      url: `/createquestion/sound/${gameid}`,
+    },
   ];
 
   return (

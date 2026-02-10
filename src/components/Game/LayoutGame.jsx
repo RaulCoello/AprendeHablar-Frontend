@@ -4,11 +4,12 @@ import Progres from "./Progres";
 import QSRQuestion from "../QuestionsTypes/Selection/Resolve/QSRQuestion";
 import QIRQuestion from "../QuestionsTypes/Image/Resolve/QIRQuestion";
 import QPRQuestion from "../QuestionsTypes/Paint/Resolve/QPRQuestion";
+import QDRQuestions from "../QuestionsTypes/Sound/Resolve/QDRQuestions";
 import CorrectOp from "./CorrectOp";
 import GameOver from "./GameOver";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 
-export default function LayoutGame({ questions }) {
+export default function LayoutGame({ questions, speak }) {
   //{questions.length}
 
   const total_number_question = questions.length;
@@ -19,7 +20,6 @@ export default function LayoutGame({ questions }) {
     is_correct: false,
     open: false,
   });
-
   const [current_question, setCurrent_question] = useState({
     id: null,
     title: "",
@@ -30,6 +30,7 @@ export default function LayoutGame({ questions }) {
     number_question: null,
   });
   // la primer vez que salga esta pantalla se debe cargar la primer pregunta
+
   useEffect(() => {
     if (questions.length > 0) {
       setCurrent_question(questions_copy[0]);
@@ -60,50 +61,6 @@ export default function LayoutGame({ questions }) {
     }
   }, [questions_copy]);
 
-  useEffect(() => {
-    window.speechSynthesis.getVoices();
-  }, []);
-
-  const speak = (text) => {
-    return new Promise((resolve) => {
-      if (!text) {
-        resolve();
-        return;
-      }
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-
-      const voice = voices.find(
-        (v) =>
-          v.name === "Microsoft Elena Online (Natural) - Spanish (Argentina)",
-      );
-
-      if (voice) {
-        utterance.voice = voice;
-        utterance.lang = voice.lang;
-      } else {
-        utterance.lang = "es-ES";
-        console.warn("No se encontró esa voz, usando voz por defecto");
-      }
-
-      utterance.rate = 1;
-      utterance.pitch = 2;
-
-      // cuando termine de hablar, resolvemos la Promise
-      utterance.onend = () => {
-        resolve();
-      };
-
-      utterance.onerror = () => {
-        console.error("Error en speech synthesis");
-        resolve(); // para no bloquear el flujo
-      };
-
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    });
-  };
   /*
   SIMULACINO:
   {current_question.title}
@@ -158,6 +115,14 @@ export default function LayoutGame({ questions }) {
       case "paint":
         return (
           <QPRQuestion
+            question={current_question}
+            aceptar={aceptar}
+            speak={speak}
+          />
+        );
+      case "sound":
+        return (
+          <QDRQuestions
             question={current_question}
             aceptar={aceptar}
             speak={speak}

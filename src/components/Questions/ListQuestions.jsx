@@ -52,6 +52,10 @@ export default function ListQuestions({
         );
         break;
 
+      case "sound": // se envia a la de selection_text porque es practiamente lo mismo, solo cambia cuando se va a contestar la pregunta xd
+        router.push(`/editquestion/sound?questionid=${id}&gameid=${gameid}`);
+        break;
+
       default:
         alert("Tipo de pregunta no soportada aun");
     }

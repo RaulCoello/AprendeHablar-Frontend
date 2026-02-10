@@ -4,25 +4,18 @@ import Image from "next/image";
 import Loader from "@/components/Layout/Loader";
 import { AiTwotonePlayCircle } from "react-icons/ai";
 
-export default function QPRQuestion({ question, aceptar, speak }) {
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE + "/media";
+export default function QDRQuestions({ question, aceptar, speak }) {
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE + "media";
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const [loading, setLoading] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [speaking, setSpeaking] = useState(false);
-  const [paintImage, setPaintImage] = useState(false);
   const [leer, setLeer] = useState(false);
-  const [answer, setAwnser] = useState({
-    answer: "",
-    is_correct: false,
-  });
-  const classnameLoader_ = ` mt-3 h-64 w-64 mx-auto transition duration-1000 ease-in-out grayscale-100`;
-  const classname_ = ` mt-3 h-64 w-64 mx-auto transition duration-1000 ease-in-out ${answer?.is_correct ? "grayscale-0" : "grayscale-100"}`;
   // cargar las respuestas
   const fetchData = async () => {
     try {
       setLoading(true);
-      setLeer(false);
       const id = question.id;
       //alert(id);
       // cargar los datos de la pregunta
@@ -32,7 +25,6 @@ export default function QPRQuestion({ question, aceptar, speak }) {
       }
       const data = await response.json();
       setAnswers(data);
-      setAwnser({ ...answer, answer: "", is_correct: false });
     } catch (err) {
       //alert("Error al cargar los datos");
       console.log(err);
@@ -59,37 +51,26 @@ export default function QPRQuestion({ question, aceptar, speak }) {
     if (leer) LeerPreguntaIndicacion();
   }, [leer]);
 
-  // hacer una funcion para leer la respuesta y si es correcta cambiar un estado para que pinte la figura
-  const Pintar = (answer, is_correct) => {
-    setAwnser({ ...answer, answer: answer, is_correct: is_correct });
-    if (!is_correct) aceptar(answer, is_correct);
+  // reproducir el sonido primero y luego aceptar la respuesta
+  const Repro = (answer, is_correct, sound) => {
+    const sound_ = new Audio(`${apiBase}/${sound}`);
+    sound_.volume = 0.5; // opcional
+    sound_.play().catch((err) => {
+      console.log("Error reproduciendo audio:", err);
+    }); // evita error por autoplay policy
+
+    // primero tiene que terminar de reproducirse el audio para ir a la sigueinte funcion:
+    //aceptar(answer || "sin texto", is_correct);
+
+    sound_.onended = () => {
+      aceptar(answer || "", is_correct);
+    };
   };
-
-  useEffect(() => {
-    if (!answer) return;
-
-    let timer;
-
-    if (answer.is_correct) {
-      const sound = new Audio("/Sounds/discovery_sound.m4a");
-      sound.volume = 0.5; // opcional
-      sound.play().catch(() => {}); // evita error por autoplay policy
-
-      timer = setTimeout(() => {
-        aceptar(answer.answer, answer.is_correct);
-        sound.pause();
-        sound.currentTime = 0;
-      }, 4000); // 2 segundos (ajusta el tiempo)
-    }
-
-    return () => clearTimeout(timer);
-  }, [answer]);
-
   return (
     <>
       {loading && <Loader />}
       {/* INTERFAZ PARA CREAR EL JUEGO */}
-      <div className="flex flex-row gap-3">
+      <div className="flex flex-col gap-3">
         {/* CUERPO DONDE VA LA PREGUNTA */}
         <div className="flex flex-col gap-3 shadow-2xl mt-4 mb-4 rounded-2xl items-center content-center text-center justify-center">
           <div className="p-4 mx-auto flex flex-col gap-4 w-full">
@@ -110,7 +91,7 @@ export default function QPRQuestion({ question, aceptar, speak }) {
               <img
                 src={`${apiBase}/${question.resource}`}
                 alt="Imagen"
-                className={`${loading ? classnameLoader_ : classname_}`}
+                className="mt-3 h-64 w-64  mx-auto"
               />
             )}
             <h1 className="text-center text-2xl text-slate-700 w-full">
@@ -125,20 +106,26 @@ export default function QPRQuestion({ question, aceptar, speak }) {
               return (
                 <div
                   key={index}
-                  onClick={() => Pintar(answer.answer, answer.is_correct)}
+                  onClick={() =>
+                    Repro(answer.answer || "", answer.is_correct, answer.sound)
+                  }
                   className="flex flex-col p-4 gap-2  text-3xl   hover:shadow-xl hover:shadow-orange-900 cursor-pointer items-center justify-center rounded-3xl"
                   style={{ backgroundColor: answer.color || "#fb923c" }}
                 >
                   <div className="flex flex-row gap-2 w-full items-center justify-center">
                     <div className="flex flex-col gap-2">
-                      <div className=" flex flex-row gap-2 mx-auto text-center items-center justify-center">
-                        <h1 className="w-full flex-1 p-2 text-start font-bold text-white">
-                          {answer.answer ? answer.answer : "Sin respuesta"}
-                        </h1>
+                      <div className="rounded-full bg-white p-2">
+                        {/*  <audio src={`${apiBase}/${answer.sound}`} controls /> */}
+
+                        <Image
+                          src="/sound_icon.png"
+                          alt="Next.js logo"
+                          width={150}
+                          height={20}
+                          priority
+                          className="p-6"
+                        />
                       </div>
-                      <button className="z-10 cursor-pointer  bg-orange-300 rounded-full p-2 font-normal text-lg">
-                        <AiTwotonePlayCircle className="text-7xl text-white mx-auto" />
-                      </button>
                     </div>
                   </div>
                 </div>
