@@ -19,63 +19,23 @@ export function ListGames({ games, admin, recargar }) {
     setGameToEdit(game);
     setShowEditGame(true);
   };
-  // funcion para activar el tts
-  const speak = (text) => {
-    return new Promise((resolve) => {
-      if (!text) {
-        resolve();
-        return;
-      }
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-
-      const voice = voices.find(
-        (v) =>
-          v.name === "Microsoft Elena Online (Natural) - Spanish (Argentina)",
-      );
-
-      if (voice) {
-        utterance.voice = voice;
-        utterance.lang = voice.lang;
-      } else {
-        utterance.lang = "es-ES";
-        console.warn("No se encontró esa voz, usando voz por defecto");
-      }
-
-      utterance.rate = 1;
-      utterance.pitch = 2;
-
-      // cuando termine de hablar, resolvemos la Promise
-      utterance.onend = () => {
-        resolve();
-      };
-
-      utterance.onerror = () => {
-        console.error("Error en speech synthesis");
-        resolve(); // para no bloquear el flujo
-      };
-
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    });
-  };
 
   // funcion para ir a editar las preguntas o jugarlas
-  const handleGameClick = async (gametitle, gameid) => {
-    // Texto que quieres que diga
-    const text = admin
-      ? `Vas a editar el juego ${gametitle}`
-      : `Vas a jugar el juego ${gametitle}`;
-
-    // Esperar a que termine de hablar
-    await speak(text);
-
-    // Después de que termina el speak, continúan las acciones
+  const handleGameClick = async (tss, gameid) => {
     if (admin) {
       router.push(`/editgame/${gameid}`);
     } else {
-      router.push(`/PlayGame?game=${gameid}`);
+      const Url_tss = `${apiMedia}/${tss}`;
+
+      const sound_ = new Audio(Url_tss);
+      sound_.volume = 0.5; // opcional
+      sound_.play().catch((err) => {
+        console.log("Error reproduciendo audio:", err);
+      }); // evita error por autoplay policy
+
+      sound_.onended = () => {
+        router.push(`/PlayGame?game=${gameid}`);
+      };
     }
   };
 
@@ -105,7 +65,7 @@ export function ListGames({ games, admin, recargar }) {
             <div
               key={index}
               onClick={() =>
-                handleGameClick(game.title ? game.title : "Sin Titulo", game.id)
+                handleGameClick(game.titulo_tts ? game.titulo_tts : "", game.id)
               }
               className="flex flex-col p-4 gap-2  text-3xl hover:text-4xl hover:shadow-2xl hover:shadow-lime-900 cursor-pointer items-center justify-center border-8 border-lime-500 rounded-3xl"
               style={{ backgroundColor: game.color || "#65a30d" }}
