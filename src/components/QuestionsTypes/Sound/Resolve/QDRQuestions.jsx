@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Loader from "@/components/Layout/Loader";
-import { AiTwotonePlayCircle } from "react-icons/ai";
+//import { AiTwotonePlayCircle } from "react-icons/ai";
 
 export default function QDRQuestions({ question, aceptar, speak }) {
   const apiBase = process.env.NEXT_PUBLIC_API_BASE + "media";
@@ -38,18 +38,25 @@ export default function QDRQuestions({ question, aceptar, speak }) {
     //console.log(question);
     // title indication
     setSpeaking(true);
-    await speak(question.title);
-    await speak(question.indication);
+    await speak(question.title_tts || "");
+    await speak(question.indication_tts || "");
     setSpeaking(false);
   };
 
-  useEffect(() => {
+  /*
+    useEffect(() => {
     fetchData();
   }, [question]);
 
   useEffect(() => {
     if (leer) LeerPreguntaIndicacion();
   }, [leer]);
+  */
+
+  useEffect(() => {
+    fetchData();
+    LeerPreguntaIndicacion();
+  }, [question]);
 
   // reproducir el sonido primero y luego aceptar la respuesta
   const Repro = (answer, is_correct, sound) => {

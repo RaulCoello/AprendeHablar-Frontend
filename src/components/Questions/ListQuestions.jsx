@@ -3,6 +3,8 @@ import { AiTwotoneEdit, AiFillDelete } from "react-icons/ai";
 import TypeQuestions from "./TypeQuestions";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Retroceder from "../Layout/Retroceder";
+
 export default function ListQuestions({
   questions,
   gameid,
@@ -73,6 +75,7 @@ export default function ListQuestions({
           CloseTypesQuestion={() => setOpenTypesQuestions(false)}
         />
       )}
+      <Retroceder ruta={"/"} />
       {/* LISTA DE PREGUNTAS DEL JUEGO */}
       <div className="p-4 grid lg:grid-cols-1 grid-cols-1 gap-10">
         {questions.map((question, index) => {

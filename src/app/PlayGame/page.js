@@ -4,9 +4,9 @@ import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Layout/Navbar";
 import Loader from "@/components/Layout/Loader";
 import LayoutGame from "@/components/Game/LayoutGame";
-import useSpeech from "@/components/hooks/useSpeech";
+//import useSpeech from "@/components/hooks/useSpeech";
 export default function PlayGame() {
-  const { speak, ready } = useSpeech();
+  //const { speak, ready } = useSpeech();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const searchParams = useSearchParams();
   const gameid = searchParams.get("game");
@@ -42,6 +42,16 @@ export default function PlayGame() {
   }, [gameid]);
 
   useEffect(() => {
+    const unlock = () => {
+      const a = new Audio();
+      a.play().catch(() => {});
+      window.removeEventListener("click", unlock);
+    };
+
+    window.addEventListener("click", unlock);
+  }, []);
+
+  useEffect(() => {
     if (!finallyFetch) return;
     let timer;
     if (finallyFetch) {
@@ -59,7 +69,7 @@ export default function PlayGame() {
       {/* <button onClick={() => Empezar()}>Empezar juego</button> */}
       {questions && questions.length !== 0 ? (
         viewQuestions ? (
-          <LayoutGame questions={questions} speak={speak} />
+          <LayoutGame questions={questions} />
         ) : (
           ""
         )

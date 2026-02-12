@@ -9,8 +9,9 @@ import CorrectOp from "./CorrectOp";
 import GameOver from "./GameOver";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 
-export default function LayoutGame({ questions, speak }) {
+export default function LayoutGame({ questions }) {
   //{questions.length}
+  const apiMedia = process.env.NEXT_PUBLIC_API_MEDIA;
 
   const total_number_question = questions.length;
   const [questions_resolved, setQuestions_resolved] = useState([]);
@@ -72,14 +73,20 @@ export default function LayoutGame({ questions, speak }) {
   const aceptar = async (opSelect, is_correct) => {
     // Texto que quieres que diga
     const text = opSelect || "";
-    // Esperar a que termine de hablar
-    await speak(text);
+    const Url_tss = `${apiMedia}/${text}`;
 
-    //Abrir la ventana para ver si la respuesta es correcta o no
-    setOpSelect({ ...CorrectOp, is_correct: is_correct, open: true });
-
-    // cuando termine de hablar avanzar a la siguiente pregunta
-    //if (is_correct) addResolveQuestion();
+    if (text) {
+      const sound_ = new Audio(Url_tss);
+      sound_.volume = 0.5; // opcional
+      sound_.play().catch((err) => {
+        console.log("Error reproduciendo audio:", err);
+      }); // evita error por autoplay policy
+      sound_.onended = () => {
+        setOpSelect({ ...CorrectOp, is_correct: is_correct, open: true });
+      };
+    } else {
+      setOpSelect({ ...CorrectOp, is_correct: is_correct, open: true });
+    }
   };
 
   const closeopSelect = () => {
@@ -89,6 +96,21 @@ export default function LayoutGame({ questions, speak }) {
     }
   };
   //opSelect.is_correct
+
+  const speak = (opSelect) => {
+    return new Promise((resolve, reject) => {
+      const text = opSelect || "";
+      const Url_tss = `${apiMedia}/${text}`;
+
+      const sound_ = new Audio(Url_tss);
+      sound_.volume = 0.5;
+
+      sound_.onended = () => resolve(); // ✅ termina audio
+      sound_.onerror = reject; // opcional
+
+      sound_.play().catch(reject); // autoplay policy u otros errores
+    });
+  };
 
   // switch para mostrar el layout de las respuestas segun corresponde al tipo de pregunta
   //current_question

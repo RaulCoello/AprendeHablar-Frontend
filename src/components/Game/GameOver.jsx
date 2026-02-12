@@ -1,8 +1,10 @@
 import React from "react";
 import Image from "next/image";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function GameOver({ puntos }) {
+  const router = useRouter();
   useEffect(() => {
     // 🔊 reproducir sonido al montar
     const sound = new Audio("/Sounds/final_succes.m4a");
@@ -60,6 +62,12 @@ export default function GameOver({ puntos }) {
               className=" w-3/6 mx-auto p-2 rounded-2xl text-3xl bg-white text-orange-500 font-bold cursor-pointer"
             >
               Jugar de nuevo
+            </button>
+            <button
+              onClick={() => router.push("/")}
+              className=" w-3/6 mx-auto p-2 rounded-2xl text-3xl bg-white text-orange-500 font-bold cursor-pointer"
+            >
+              Lista de juegos
             </button>
           </div>
         </div>

@@ -39,8 +39,8 @@ export default function QIRQuestion({ question, aceptar, speak }) {
     //console.log(question);
     // title indication
     setSpeaking(true);
-    await speak(question.title);
-    await speak(question.indication);
+    await speak(question.title_tts || "");
+    await speak(question.indication_tts || "");
     setSpeaking(false);
   };
 
@@ -94,7 +94,9 @@ export default function QIRQuestion({ question, aceptar, speak }) {
               return (
                 <div
                   key={index}
-                  onClick={() => aceptar(answer.answer, answer.is_correct)}
+                  onClick={() =>
+                    aceptar(answer.answer_tts || "", answer.is_correct)
+                  }
                   className="flex flex-col p-4 gap-2  text-3xl   hover:shadow-xl hover:shadow-orange-900 cursor-pointer items-center justify-center rounded-3xl"
                   style={{ backgroundColor: answer.color || "#fb923c" }}
                 >
