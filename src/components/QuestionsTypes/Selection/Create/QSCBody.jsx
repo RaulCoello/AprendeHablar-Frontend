@@ -65,7 +65,7 @@ export default function QSCBody({ onReturnBody }) {
             type="file"
             id="fileInput"
             onChange={ImagePreview}
-            accept="image/png, .jpeg"
+            accept="image/png, .jpeg, .gif, .jpg"
             className="hidden"
             ref={fileInputRef}
           />

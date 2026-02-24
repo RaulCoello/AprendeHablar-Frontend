@@ -8,6 +8,7 @@ import QDRQuestions from "../QuestionsTypes/Sound/Resolve/QDRQuestions";
 import CorrectOp from "./CorrectOp";
 import GameOver from "./GameOver";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import Retroceder from "../Layout/Retroceder";
 
 export default function LayoutGame({ questions }) {
   //{questions.length}
@@ -187,12 +188,16 @@ export default function LayoutGame({ questions }) {
       ) : (
         ""
       )}
+      <div className="mb-3">
+        <Retroceder ruta={"/"} />
+      </div>
       <Progres
         numTotal={total_number_question}
         actual={questions_resolved.length + 1}
       />
 
-      {/* UTILIZAR UN SWITCH PARA RENDERIZAR EL TIPO DE PREGUNTA */}
+      {/* UTILIZAR UN SWITCH PARA RENDERIZAR EL TIPO DE PREGUNTA  {current_question.type_question}*/}
+
       {RenderTypeAnswer()}
       {/* <button onClick={() => addResolveQuestion()}>Simular</button> */}
     </div>

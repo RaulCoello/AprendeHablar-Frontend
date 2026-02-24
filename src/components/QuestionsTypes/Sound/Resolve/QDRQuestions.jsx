@@ -77,7 +77,7 @@ export default function QDRQuestions({ question, aceptar, speak }) {
     <>
       {loading && <Loader />}
       {/* INTERFAZ PARA CREAR EL JUEGO */}
-      <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {/* CUERPO DONDE VA LA PREGUNTA */}
         <div className="flex flex-col gap-3 shadow-2xl mt-4 mb-4 rounded-2xl items-center content-center text-center justify-center">
           <div className="p-4 mx-auto flex flex-col gap-4 w-full">
@@ -121,17 +121,25 @@ export default function QDRQuestions({ question, aceptar, speak }) {
                 >
                   <div className="flex flex-row gap-2 w-full items-center justify-center">
                     <div className="flex flex-col gap-2">
-                      <div className="rounded-full bg-white p-2">
-                        {/*  <audio src={`${apiBase}/${answer.sound}`} controls /> */}
-
-                        <Image
-                          src="/sound_icon.png"
-                          alt="Next.js logo"
-                          width={150}
-                          height={20}
-                          priority
-                          className="p-6"
-                        />
+                      <div>
+                        {answer.answer_image ? (
+                          <img
+                            src={`${apiBase}/${answer.answer_image}`}
+                            alt="Imagen"
+                            className="mt-3 h-64 w-64  mx-auto"
+                          />
+                        ) : (
+                          <div className="rounded-full bg-white p-2">
+                            <Image
+                              src="/sound_icon.png"
+                              alt="Next.js logo"
+                              width={150}
+                              height={20}
+                              priority
+                              className="p-6"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

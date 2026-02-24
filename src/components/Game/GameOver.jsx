@@ -23,7 +23,7 @@ export default function GameOver({ puntos }) {
 
   return (
     <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex justify-center items-center z-50">
-      <div className="w-[60vh]">
+      <div className="w-[80vh]">
         <div className={`rounded-xl animate-fade-in bg-orange-400 p-4`}>
           <div className="h-full w-full content-center text-center flex flex-col gap-2">
             <div className="mx-auto">
@@ -65,7 +65,7 @@ export default function GameOver({ puntos }) {
             </button>
             <button
               onClick={() => router.push("/")}
-              className=" w-3/6 mx-auto p-2 rounded-2xl text-3xl bg-white text-orange-500 font-bold cursor-pointer"
+              className=" w-3/6 mx-auto p-2 rounded-2xl text-3xl bg-orange-800 text-white font-bold cursor-pointer"
             >
               Lista de juegos
             </button>

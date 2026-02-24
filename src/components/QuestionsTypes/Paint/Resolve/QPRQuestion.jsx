@@ -89,7 +89,7 @@ export default function QPRQuestion({ question, aceptar, speak }) {
     <>
       {loading && <Loader />}
       {/* INTERFAZ PARA CREAR EL JUEGO */}
-      <div className="flex flex-row gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {/* CUERPO DONDE VA LA PREGUNTA */}
         <div className="flex flex-col gap-3 shadow-2xl mt-4 mb-4 rounded-2xl items-center content-center text-center justify-center">
           <div className="p-4 mx-auto flex flex-col gap-4 w-full">

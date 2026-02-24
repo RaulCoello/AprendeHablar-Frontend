@@ -24,6 +24,8 @@ export default function QDCAnswers({ onReturnAnswrs }) {
     color: "#fb923c",
     fileP: null,
     fileE: null,
+    filePI: null,
+    fileEI: null,
   });
 
   const closeAddAnswer = () => {
@@ -33,6 +35,8 @@ export default function QDCAnswers({ onReturnAnswrs }) {
       correct: false,
       fileP: null,
       fileE: null,
+      filePI: null,
+      fileEI: null,
       color: "#fb923c",
     });
   };
@@ -40,7 +44,7 @@ export default function QDCAnswers({ onReturnAnswrs }) {
   // CRUD con el estado answers
   const addAnswerWithUUID = () => {
     //text = "", correct = false
-    const { text, correct, color, fileP, fileE } = answerAddop;
+    const { text, correct, color, fileP, fileE, filePI, fileEI } = answerAddop;
     setAnswers((prev) => {
       const lastId = prev.length > 0 ? prev[prev.length - 1].id : 0;
       const newAnswer = {
@@ -50,6 +54,8 @@ export default function QDCAnswers({ onReturnAnswrs }) {
         color,
         fileP,
         fileE,
+        filePI,
+        fileEI,
       };
       return [...prev, newAnswer];
     });
@@ -86,7 +92,8 @@ export default function QDCAnswers({ onReturnAnswrs }) {
     setAnswerEditColor(null);
   };
 
-  //imagen CREATE-------------------
+  // SOUND ANSWER CREATE Y EDIT ------------------------------------------------------------
+  //sound CREATE-------------------
   const fileInputRef = useRef(null);
   const ImagePreview = (e) => {
     try {
@@ -107,9 +114,9 @@ export default function QDCAnswers({ onReturnAnswrs }) {
       fileInputRef.current.click(); // Activa el input de tipo "file"
     }
   };
-  // fin image CREATE --------------
+  // fin sound CREATE --------------
 
-  //imagen EDIT-------------------
+  //sound EDIT-------------------
   const fileInputRefE = useRef(null);
   const ImagePreviewE = (e) => {
     //alert(`ID a editar: ${answerIdEdit}`);
@@ -119,6 +126,11 @@ export default function QDCAnswers({ onReturnAnswrs }) {
       const selectedFile = e.target.files[0];
 
       //setAnswerAddop({ ...answerAddop, fileE: selectedFile, fileP: setFileP }); --> Enviar a editar segun el id que se recibe
+
+      // revisar si tiene la propiedad new,
+      // si no tiene la propiedad new entonces vino de la BD por lo tanto no se puede editar
+      // fileE ni fileP, en ese caso hay que empujarle esas propiedades
+
       editAnswer(answerIdEdit, {
         fileE: selectedFile,
         fileP: setFileP,
@@ -132,7 +144,63 @@ export default function QDCAnswers({ onReturnAnswrs }) {
       fileInputRefE.current.click(); // Activa el input de tipo "file"
     }
   };
+  // fin sound EDIT --------------
+  // END SOUND ANSWER CREATE Y EDIT ------------------------------------------------------------
+
+  // -------------------------------------------------------------
+  // IMAGE ANSWER CREATE Y EDIT ------------------------------------------------------------
+  //image CREATE-------------------
+  const fileInputRefI = useRef(null);
+  const ImagePreviewI = (e) => {
+    try {
+      //setFileP(URL.createObjectURL(e.target.files[0]));
+      const setFileP = URL.createObjectURL(e.target.files[0]);
+
+      const selectedFile = e.target.files[0];
+      //NOsetFile(selectedFile);
+      //setFileE(selectedFile);
+      setAnswerAddop({
+        ...answerAddop,
+        fileEI: selectedFile,
+        filePI: setFileP,
+      });
+      //console.log(answerAddop);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleButtonClickI = () => {
+    if (fileInputRefI.current) {
+      fileInputRefI.current.click(); // Activa el input de tipo "file"
+    }
+  };
+  // fin image CREATE --------------
+
+  //image EDIT-------------------
+  const fileInputRefEI = useRef(null);
+  const ImagePreviewEI = (e) => {
+    //alert(`ID a editar: ${answerIdEdit}`);
+    try {
+      //setFileP(URL.createObjectURL(e.target.files[0]));
+      const setFileP = URL.createObjectURL(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+
+      editAnswer(answerIdEdit, {
+        fileEI: selectedFile,
+        filePI: setFileP,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleButtonClickEI = () => {
+    if (fileInputRefEI.current) {
+      fileInputRefEI.current.click(); // Activa el input de tipo "file"
+    }
+  };
   // fin image EDIT --------------
+  // END IMAGE ANSWER CREATE Y EDIT ------------------------------------------------------------
+
   return (
     <>
       {openColor && (
@@ -154,6 +222,53 @@ export default function QDCAnswers({ onReturnAnswrs }) {
                 <div className="flex flex-col gap-2">
                   <div className=" flex flex-col gap-2">
                     {/* Si no ha subido una imagen entonces mostrar una por default */}
+                    {answer.answer_image && !answer.filePI ? (
+                      <img
+                        src={`${apiBase}/media/${answer.answer_image}`}
+                        alt="Imagen"
+                        className="mt-3 h-64 w-64  mx-auto"
+                      />
+                    ) : !answer.filePI ? (
+                      <div className="mx-auto">
+                        <Image
+                          src="/duo2.png"
+                          alt="Next.js logo"
+                          width={200}
+                          height={20}
+                          priority
+                        />
+                      </div>
+                    ) : (
+                      <img
+                        src={answer.filePI}
+                        alt="Imagen"
+                        className="mt-3 h-64 w-64  mx-auto"
+                      />
+                    )}
+
+                    {/* el boton para cambiar la imagen */}
+                    <div className="mx-auto w-4/6">
+                      <input
+                        type="file"
+                        id="fileInput"
+                        onChange={ImagePreviewEI}
+                        accept="image/png, .jpeg, .gif, .jpg"
+                        className="hidden"
+                        ref={fileInputRefEI}
+                      />
+
+                      <button
+                        className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center bg-yellow-500 rounded-4xl p-2 w-full font-normal text-lg"
+                        onClick={() => (
+                          setAnswerIdEdit(answer.id),
+                          handleButtonClickEI()
+                        )} // aqui hay que enviar el id de la op que se va a cambiar la imagen
+                      >
+                        <AiOutlineUpload className=" font-bold text-3xl text-black" />
+                      </button>
+                    </div>
+
+                    {/* Si no ha subido un sonido entonces mostrar una imagen por default */}
                     {!answer.fileP ? (
                       <div className="mx-auto">
                         <Image
@@ -174,7 +289,7 @@ export default function QDCAnswers({ onReturnAnswrs }) {
                         type="file"
                         id="fileInput"
                         onChange={ImagePreviewE}
-                        accept="image/png, .jpeg"
+                        accept="image/png, .jpeg, .gif, .jpg"
                         className="hidden"
                         ref={fileInputRefE}
                       />
@@ -236,6 +351,50 @@ export default function QDCAnswers({ onReturnAnswrs }) {
           >
             <div className=" flex flex-col gap-2">
               {/* Si no ha subido una imagen entonces mostrar una por default */}
+              {answerAddop.answer_image && !answerAddop.filePI ? (
+                <img
+                  src={`${apiBase}/media/${answerAddop.answer_image}`}
+                  alt="Imagen"
+                  className="mt-3 h-64 w-64  mx-auto"
+                />
+              ) : !answerAddop.filePI ? (
+                <div className="mx-auto">
+                  <Image
+                    src="/duo2.png"
+                    alt="Next.js logo"
+                    width={200}
+                    height={20}
+                    priority
+                  />
+                </div>
+              ) : (
+                <img
+                  src={answerAddop.filePI}
+                  alt="Imagen"
+                  className="mt-3 h-64 w-64  mx-auto"
+                />
+              )}
+
+              {/* el boton para cambiar la imagen */}
+              <div className="mx-auto w-4/6">
+                <input
+                  type="file"
+                  id="fileInput"
+                  onChange={ImagePreviewI}
+                  accept="image/png, .jpeg, .gif, .jpg"
+                  className="hidden"
+                  ref={fileInputRefI}
+                />
+
+                <button
+                  className="z-10 cursor-pointer flex justify-center items-center text-center content-center self-center bg-yellow-500 rounded-4xl p-2 w-full font-normal text-lg"
+                  onClick={handleButtonClickI}
+                >
+                  <AiOutlineUpload className=" font-bold text-3xl text-black" />
+                </button>
+              </div>
+
+              {/* Si no ha subido un sonido entonces mostrar una imagen por default */}
               {!answerAddop.fileP ? (
                 <div className="mx-auto">
                   <Image

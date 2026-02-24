@@ -131,7 +131,7 @@ export default function QFCBody({ onReturnBody, setLoading, onReturnAnswrs }) {
             type="file"
             id="fileInput"
             onChange={ImagePreview}
-            accept="image/png, .jpeg, .jpg"
+            accept="image/png, .jpeg, .gif, .jpg"
             className="hidden"
             ref={fileInputRef}
           />

@@ -59,6 +59,10 @@ export default function SoundQuestion() {
         // fileE
         ansForm.set("sound", Answers[i].fileE);
 
+        if (Answers[i].fileEI) {
+          ansForm.set("answer_image", Answers[i].fileEI);
+        }
+
         const resulta = await axios.post(`${apiUrl}/answers/`, ansForm, {
           /*
         headers: {

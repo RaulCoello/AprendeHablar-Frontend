@@ -178,7 +178,7 @@ export default function QFCAnswers({ onReturnAnswrs, answers, setAnswers }) {
                         type="file"
                         id="fileInput"
                         onChange={ImagePreviewE}
-                        accept="image/png, .jpeg"
+                        accept="image/png, .jpeg, .gif, .jpg"
                         className="hidden"
                         ref={fileInputRefE}
                       />
@@ -281,7 +281,7 @@ export default function QFCAnswers({ onReturnAnswrs, answers, setAnswers }) {
                   type="file"
                   id="fileInput"
                   onChange={ImagePreview}
-                  accept="image/png, .jpeg"
+                  accept="image/png, .jpeg, .gif, .jpg"
                   className="hidden"
                   ref={fileInputRef}
                 />
